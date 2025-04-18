@@ -1,8 +1,44 @@
 name: scholzify
 services:
+  reverse-proxy:
+    image: traefik:v3.3
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=benedikt@scholzify.de"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+    ports:
+      - "80:80"
+      # HTTPS
+      - "443:443"
+      # web ui (enabled by api.insecure=true)
+      - "8080:8080"
+    volumes:
+      - letsencrypt:/letsencrypt
+      # traefik can listen docker events
+      - /var/run/docker.sock:/var/run/docker.sock
   web:
     build: .
-    ports:
-      - "3000:3000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.web.rule=Host(`scholzify.de`) || Host(`www.scholzify.de`)"
+      - "traefik.http.routers.web.entrypoints=websecure"
+      - "traefik.http.routers.web.tls.certresolver=myresolver"
+      - "traefik.http.routers.web.middlewares=redirect-to-non-www"
+      - "traefik.http.middlewares.redirect-to-non-www.redirectregex.regex=^https?://www\\.(.*)"
+      - "traefik.http.middlewares.redirect-to-non-www.redirectregex.replacement=https://$${1}"
+      - "traefik.http.middlewares.redirect-to-non-www.redirectregex.permanent=true"
     environment:
       - NODE_ENV=production
+    # deploy:
+      # mode: replicated
+      # replicas: 3
+volumes:
+  letsencrypt:
+
