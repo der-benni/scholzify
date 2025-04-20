@@ -6,5 +6,3 @@ Dockerfile
 .gitignore
 npm-debug.log
 README.md
-.next
-.git
