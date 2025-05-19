@@ -5,13 +5,13 @@ FROM node:22-alpine
 WORKDIR /app
 
 # Copy package.json and package-lock.json
-COPY package.json package-lock.json ./
+COPY client/package*.json ./
 
 # Install dependencies
 RUN npm install --legacy-peer-deps
 
 # Copy the rest of the application
-COPY . .
+COPY client/ .
 
 # Build the Next.js application
 RUN npm run build
