@@ -40,7 +40,7 @@ export default async function HomeRoute() {
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-zinc-800 to-zinc-700 text-white py-20">
         <div className="container mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Hi, I'm Benedikt Scholz</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Hi, I&apos;m Benedikt Scholz</h1>
           <p className="text-xl mb-6">Full-Stack Developer • JavaScript • React • Node.js</p>
           <a href="#projects" className="inline-block bg-white text-zinc-900 px-6 py-3 rounded-full font-semibold hover:bg-gray-200 transition">View My Work</a>
         </div>
