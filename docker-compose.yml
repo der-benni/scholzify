@@ -36,6 +36,14 @@ services:
       - "traefik.http.middlewares.redirect-to-non-www.redirectregex.regex=^https?://www\\.(.*)"
       - "traefik.http.middlewares.redirect-to-non-www.redirectregex.replacement=https://$${1}"
       - "traefik.http.middlewares.redirect-to-non-www.redirectregex.permanent=true"
+      
+      - "traefik.http.routers.redirect-com.rule=Host(`scholzify.com`) || Host(`www.scholzify.com`)"
+      - "traefik.http.routers.redirect-com.entrypoints=websecure"
+      - "traefik.http.routers.redirect-com.tls.certresolver=myresolver"
+      - "traefik.http.routers.redirect-com.middlewares=redirect-to-de"
+      - "traefik.http.middlewares.redirect-to-de.redirectregex.regex=^https?://(www\\.)?scholzify\\.com(.*)"
+      - "traefik.http.middlewares.redirect-to-de.redirectregex.replacement=https://scholzify.de$${2}"
+      - "traefik.http.middlewares.redirect-to-de.redirectregex.permanent=true"
     environment:
       - NODE_ENV=production
     # deploy:
